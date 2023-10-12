@@ -17,7 +17,8 @@ import team.gof.redoit.global.png.GenerateMaskPng
 @Component
 class FlaskRestTemplate(
     private val restTemplate: RestTemplate,
-    private val generateMaskPng: GenerateMaskPng
+    private val generateMaskPng: GenerateMaskPng,
+    private val flaskConfig: FlaskConfig
 ) {
     private val log = LoggerFactory.getLogger(FlaskRestTemplate::class.java)
 
@@ -37,7 +38,7 @@ class FlaskRestTemplate(
         val requestCallback = restTemplate.httpEntityCallback<Any>(HttpEntity<MultiValueMap<String, Any>>(body, httpHeaders))
         val responseExtractor = restTemplate.responseEntityExtractor<String>(String::class.java)
 
-        val responseEntity = restTemplate.execute("http://127.0.0.1:5000/upload?prompt=$prompt", HttpMethod.POST, requestCallback, responseExtractor)
+        val responseEntity = restTemplate.execute("${flaskConfig.url}/upload?prompt=$prompt", HttpMethod.POST, requestCallback, responseExtractor)
             ?: throw RuntimeException()
         return responseEntity.body ?: throw RuntimeException()
     }

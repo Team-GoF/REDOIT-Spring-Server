@@ -2,3 +2,6 @@ spring:
   servlet:
     multipart:
       max-file-size: 4MB
+
+flask:
+  url: ${FLASK_URL}
