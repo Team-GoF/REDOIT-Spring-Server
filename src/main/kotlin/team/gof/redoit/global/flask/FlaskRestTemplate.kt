@@ -11,6 +11,7 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
+import team.gof.redoit.global.png.ConvertToPng
 import team.gof.redoit.global.png.GenerateMaskPng
 
 
@@ -18,18 +19,25 @@ import team.gof.redoit.global.png.GenerateMaskPng
 class FlaskRestTemplate(
     private val restTemplate: RestTemplate,
     private val generateMaskPng: GenerateMaskPng,
-    private val flaskConfig: FlaskConfig
+    private val flaskConfig: FlaskConfig,
+    private val convertToPng: ConvertToPng
 ) {
     private val log = LoggerFactory.getLogger(FlaskRestTemplate::class.java)
 
     fun sendToFlask(image: MultipartFile, prompt: String): String {
         val httpHeaders = HttpHeaders()
         httpHeaders.contentType = MediaType(MediaType.MULTIPART_FORM_DATA)
+        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
 
         log.info("byte is ${image.bytes}")
 
-        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
-        addBody("image", image.bytes, image.originalFilename, body)
+        val fileName = image.originalFilename?.split(".")
+
+        if(fileName?.get(1) != "png")
+            addBody("image", convertToPng.execute(image), "${fileName?.get(0)}.png", body)
+        else
+            addBody("image", image.bytes, image.originalFilename, body)
+
 
         val emptyImgByteArray = generateMaskPng.execute(file = image)
 
