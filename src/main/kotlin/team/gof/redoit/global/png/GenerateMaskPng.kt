@@ -25,10 +25,10 @@ class GenerateMaskPng {
         log.info("$width")
         log.info("$height")
 
-        val startX = width / 6
-        val startY = height / 6
-        val endX = startX * 5
-        val endY = startY * 5
+        val startX = width / 10
+        val startY = height / 10
+        val endX = startX * 9
+        val endY = startY * 9
 
         for(x in startX until  endX) {
             for(y in startY until endY) {
