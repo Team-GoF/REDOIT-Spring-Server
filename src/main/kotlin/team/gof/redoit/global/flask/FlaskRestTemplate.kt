@@ -31,10 +31,10 @@ class FlaskRestTemplate(
 
         log.info("byte is ${image.bytes}")
 
-        val fileName = image.originalFilename?.split(".")
+        val splitFile = image.originalFilename.toString().split(".")
 
-        if(fileName?.get(1) != "png")
-            addBody("image", convertToPng.execute(image), "${fileName?.get(0)}.png", body)
+        if(splitFile[1] != "png")
+            addBody("image", convertToPng.execute(image), "${splitFile[0]}.png", body)
         else
             addBody("image", image.bytes, image.originalFilename, body)
 
